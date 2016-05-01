@@ -73,14 +73,12 @@ export class StarRating extends HTMLElement {
           // console.log(CSSTemplate(this._size(), this._src()) + this._renderStars());
           let elementOptions = {
             size: this._size(),            
-            colors: this._colors()
+            colors: this._colors(),
+            src: this._src(),
+            transition: this._transition()
           };
 
-          if (this._src()) {
-            elementOptions['src'] = this._src();
-          }
           console.log(elementOptions);
-
           this._root.innerHTML = elementTemplate(elementOptions) + this._renderStars();
         } else{
           this.setAttribute('style', StarRating._style(this._size(), this._src()).element());
@@ -176,6 +174,10 @@ export class StarRating extends HTMLElement {
     _size() {
         let sizeAttr = this.getAttribute('size');
         return exists(sizeAttr) ? sizeAttr : SIZE;
+    }
+    _transition() {
+        let transition = this.getAttribute('transition');
+        return exists(transition) ? transition : false;
     }
 
     _setValue(val){

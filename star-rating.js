@@ -153,14 +153,12 @@
 	                // console.log(CSSTemplate(this._size(), this._src()) + this._renderStars());
 	                var elementOptions = {
 	                    size: this._size(),
-	                    colors: this._colors()
+	                    colors: this._colors(),
+	                    src: this._src(),
+	                    transition: this._transition()
 	                };
 	
-	                if (this._src()) {
-	                    elementOptions['src'] = this._src();
-	                }
 	                console.log(elementOptions);
-	
 	                this._root.innerHTML = (0, _helpers.elementTemplate)(elementOptions) + this._renderStars();
 	            } else {
 	                this.setAttribute('style', StarRating._style(this._size(), this._src()).element());
@@ -266,6 +264,12 @@
 	            return (0, _helpers.exists)(sizeAttr) ? sizeAttr : _vars.SIZE;
 	        }
 	    }, {
+	        key: "_transition",
+	        value: function _transition() {
+	            var transition = this.getAttribute('transition');
+	            return (0, _helpers.exists)(transition) ? transition : false;
+	        }
+	    }, {
 	        key: "_setValue",
 	        value: function _setValue(val) {
 	            this.setAttribute("value", val);
@@ -343,8 +347,6 @@
 	  var src = options['src'];
 	  var transition = options['transition'];
 	
-	  console.log(options);
-	
 	  var starStyles = void 0;
 	  var selectedStarStyles = void 0;
 	  if (src) {
@@ -353,6 +355,9 @@
 	  } else {
 	    starStyles = 'fill: ' + colors[0] + ';';
 	    selectedStarStyles = 'fill: ' + colors[1] + ';';
+	    if (transition) {
+	      starStyles += 'transition: ' + transition + ' fill;';
+	    }
 	  }
 	
 	  return '<style>\n           :host {\n             display: flex;\n             -webkit-align-items: center;\n             -ms-align-items: center;\n             -moz-align-items: center;\n             align-items: center;\n             -webkit-justify-content: center;\n             -ms-justify-content: center;\n             -moz-justify-content: center;\n             justify-content: center;\n             width: 100%;\n           }\n\n           .star {\n              height: ' + size + ';\n              width: ' + size + ';\n              outline: 0;\n              cursor: pointer;\n              ' + starStyles + '\n           }\n\n           .star.selected {\n              ' + selectedStarStyles + '\n           }\n\n        </style>';

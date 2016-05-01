@@ -20,9 +20,6 @@ export function elementTemplate(options){
   let src = options['src'];
   let transition = options['transition'];
 
-
-  console.log(options);
-
   let starStyles;
   let selectedStarStyles;
   if (src) {
@@ -33,6 +30,9 @@ export function elementTemplate(options){
   } else {
     starStyles = `fill: ${colors[0]};`;
     selectedStarStyles = `fill: ${colors[1]};`;
+    if (transition) {
+      starStyles += `transition: ${transition} fill;`
+    }
   }
 
 
