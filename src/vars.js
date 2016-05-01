@@ -40,3 +40,5 @@ export const STAR_STYLE       = `outline: 0;
                                  background-repeat: no-repeat;
                                  background-position: center center;
                                  background-size: cover;`
+export const UNSELECTED_COLOR = "#cccccc";
+export const SELECTED_COLOR   = "#F1C40F";

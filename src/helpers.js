@@ -14,7 +14,27 @@ export function starTemplate(){
   return '<svg class="star" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg">    <path d="M9 11.3l3.71 2.7-1.42-4.36L15 7h-4.55L9 2.5 7.55 7H3l3.71 2.64L5.29 14z"/><path d="M0 0h18v18H0z" fill="none"/></svg>';
 }
 
-export function elementTemplate(size, starImgs){
+export function elementTemplate(options){
+  let size = options['size'];
+  let colors = options['colors'];
+  let src = options['src'];
+  let transition = options['transition'];
+
+
+  console.log(options);
+
+  let starStyles;
+  let selectedStarStyles;
+  if (src) {
+    starStyles = `background: rgba(255,255,255,0) url(${src[0]}) no-repeat center center;
+      background-size: cover;
+      fill: transparent;`;
+    selectedStarStyles = `background-image: url(${src[1]});`
+  } else {
+    starStyles = `fill: ${colors[0]};`;
+    selectedStarStyles = `fill: ${colors[1]};`;
+  }
+
 
   return `<style>
            :host {
@@ -35,14 +55,11 @@ export function elementTemplate(size, starImgs){
               width: ${size};
               outline: 0;
               cursor: pointer;
-              fill: #ccc;
-              // background: rgba(255,255,255,0) url(${starImgs[0]}) no-repeat center center;
-              background-size: cover;
+              ${starStyles}
            }
 
            .star.selected {
-             // background-image: url(${starImgs[1]});
-             fill: #F1C40F;
+              ${selectedStarStyles}
            }
 
         </style>`;

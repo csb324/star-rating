@@ -151,7 +151,17 @@
 	        value: function _render() {
 	            if (this._hasShadow()) {
 	                // console.log(CSSTemplate(this._size(), this._src()) + this._renderStars());
-	                this._root.innerHTML = (0, _helpers.elementTemplate)(this._size(), this._src()) + this._renderStars();
+	                var elementOptions = {
+	                    size: this._size(),
+	                    colors: this._colors()
+	                };
+	
+	                if (this._src()) {
+	                    elementOptions['src'] = this._src();
+	                }
+	                console.log(elementOptions);
+	
+	                this._root.innerHTML = (0, _helpers.elementTemplate)(elementOptions) + this._renderStars();
 	            } else {
 	                this.setAttribute('style', StarRating._style(this._size(), this._src()).element());
 	                this._root.innerHTML = this._renderStars();
@@ -223,10 +233,22 @@
 	        key: "_src",
 	        value: function _src() {
 	            var _src = this.getAttribute('src');
-	            return (0, _helpers.exists)(_src) ? _src.split(/(\ *),{1}(\ *)/).filter(filterSrc) : StarRating._sources();
+	            return (0, _helpers.exists)(_src) ? _src.split(/(\ *),{1}(\ *)/).filter(filterSrc) : false;
 	
 	            function filterSrc(item) {
 	                if (!/^(data).*(base64)$/.test(item) && item.trim() !== '') {
+	                    return item;
+	                }
+	            }
+	        }
+	    }, {
+	        key: "_colors",
+	        value: function _colors() {
+	            var _colors = this.getAttribute('colors');
+	            return (0, _helpers.exists)(_colors) ? _colors.split(/(\ *),{1}(\ *)/).filter(filterColors) : StarRating._defaultColors();
+	
+	            function filterColors(item) {
+	                if (item.trim() !== '') {
 	                    return item;
 	                }
 	            }
@@ -260,6 +282,11 @@
 	            return [_vars.BASE_IMG_BKG, _vars.SELECTED_IMG_BKG];
 	        }
 	    }, {
+	        key: "_defaultColors",
+	        value: function _defaultColors() {
+	            return [_vars.UNSELECTED_COLOR, _vars.SELECTED_COLOR];
+	        }
+	    }, {
 	        key: "_style",
 	        value: function _style(size, starImg) {
 	
@@ -285,7 +312,7 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -310,9 +337,25 @@
 	  return '<svg class="star" height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg">    <path d="M9 11.3l3.71 2.7-1.42-4.36L15 7h-4.55L9 2.5 7.55 7H3l3.71 2.64L5.29 14z"/><path d="M0 0h18v18H0z" fill="none"/></svg>';
 	}
 	
-	function elementTemplate(size, starImgs) {
+	function elementTemplate(options) {
+	  var size = options['size'];
+	  var colors = options['colors'];
+	  var src = options['src'];
+	  var transition = options['transition'];
 	
-	  return "<style>\n           :host {\n             display: flex;\n             -webkit-align-items: center;\n             -ms-align-items: center;\n             -moz-align-items: center;\n             align-items: center;\n             -webkit-justify-content: center;\n             -ms-justify-content: center;\n             -moz-justify-content: center;\n             justify-content: center;\n             width: 100%;\n           }\n\n           .star {\n              height: " + size + ";\n              width: " + size + ";\n              outline: 0;\n              cursor: pointer;\n              fill: #ccc;\n              // background: rgba(255,255,255,0) url(" + starImgs[0] + ") no-repeat center center;\n              background-size: cover;\n           }\n\n           .star.selected {\n             // background-image: url(" + starImgs[1] + ");\n             fill: #F1C40F;\n           }\n\n        </style>";
+	  console.log(options);
+	
+	  var starStyles = void 0;
+	  var selectedStarStyles = void 0;
+	  if (src) {
+	    starStyles = 'background: rgba(255,255,255,0) url(' + src[0] + ') no-repeat center center;\n      background-size: cover;\n      fill: transparent;';
+	    selectedStarStyles = 'background-image: url(' + src[1] + ');';
+	  } else {
+	    starStyles = 'fill: ' + colors[0] + ';';
+	    selectedStarStyles = 'fill: ' + colors[1] + ';';
+	  }
+	
+	  return '<style>\n           :host {\n             display: flex;\n             -webkit-align-items: center;\n             -ms-align-items: center;\n             -moz-align-items: center;\n             align-items: center;\n             -webkit-justify-content: center;\n             -ms-justify-content: center;\n             -moz-justify-content: center;\n             justify-content: center;\n             width: 100%;\n           }\n\n           .star {\n              height: ' + size + ';\n              width: ' + size + ';\n              outline: 0;\n              cursor: pointer;\n              ' + starStyles + '\n           }\n\n           .star.selected {\n              ' + selectedStarStyles + '\n           }\n\n        </style>';
 	}
 
 /***/ },
@@ -352,6 +395,8 @@
 	var SELECTED_IMG_BKG = exports.SELECTED_IMG_BKG = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRjFDNDBGIiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMTggMTgiIHdpZHRoPSIxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik05IDExLjNsMy43MSAyLjctMS40Mi00LjM2TDE1IDdoLTQuNTVMOSAyLjUgNy41NSA3SDNsMy43MSAyLjY0TDUuMjkgMTR6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDE4djE4SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==';
 	var ELEMENT_STYLE = exports.ELEMENT_STYLE = 'display: flex;\n                                 display: -webkit-flex;\n                                 -webkit-align-items: center;\n                                 -ms-align-items: center;\n                                 -moz-align-items: center;\n                                 align-items: center;\n                                 -webkit-justify-content: center;\n                                 -ms-justify-content: center;\n                                 -moz-justify-content: center;\n                                 justify-content: center;\n                                 width: 100%;';
 	var STAR_STYLE = exports.STAR_STYLE = 'outline: 0;\n                                 cursor: pointer;\n                                 background-color: rgba(255,255,255,0);\n                                 background-repeat: no-repeat;\n                                 background-position: center center;\n                                 background-size: cover;';
+	var UNSELECTED_COLOR = exports.UNSELECTED_COLOR = "#cccccc";
+	var SELECTED_COLOR = exports.SELECTED_COLOR = "#F1C40F";
 
 /***/ }
 /******/ ]);

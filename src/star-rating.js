@@ -1,5 +1,5 @@
 import { exists, elementTemplate, starTemplate} from "./helpers";
-import { SIZE, ELEMENT_STYLE, STAR_STYLE, SELECTED_IMG_BKG, BASE_IMG_BKG, MAX_VALUE } from "./vars";
+import { SIZE, ELEMENT_STYLE, STAR_STYLE, SELECTED_IMG_BKG, BASE_IMG_BKG, MAX_VALUE, SELECTED_COLOR, UNSELECTED_COLOR } from "./vars";
 
 export class StarRating extends HTMLElement {
 
@@ -71,7 +71,17 @@ export class StarRating extends HTMLElement {
     _render(){
         if(this._hasShadow()) {
           // console.log(CSSTemplate(this._size(), this._src()) + this._renderStars());
-          this._root.innerHTML = elementTemplate(this._size(), this._src()) + this._renderStars();
+          let elementOptions = {
+            size: this._size(),            
+            colors: this._colors()
+          };
+
+          if (this._src()) {
+            elementOptions['src'] = this._src();
+          }
+          console.log(elementOptions);
+
+          this._root.innerHTML = elementTemplate(elementOptions) + this._renderStars();
         } else{
           this.setAttribute('style', StarRating._style(this._size(), this._src()).element());
           this._root.innerHTML = this._renderStars();
@@ -138,10 +148,21 @@ export class StarRating extends HTMLElement {
 
     _src(){
         let _src = this.getAttribute('src');
-        return exists(_src) ? _src.split(/(\ *),{1}(\ *)/).filter(filterSrc) : StarRating._sources();
+        return exists(_src) ? _src.split(/(\ *),{1}(\ *)/).filter(filterSrc) : false;
 
         function filterSrc(item){
           if(!(/^(data).*(base64)$/.test(item)) && item.trim() !== ''){
+            return item;
+          }
+        }
+    }
+
+    _colors(){
+        let _colors = this.getAttribute('colors');
+        return exists(_colors) ? _colors.split(/(\ *),{1}(\ *)/).filter(filterColors) : StarRating._defaultColors();
+
+        function filterColors(item) {
+          if (item.trim() !== '') {
             return item;
           }
         }
@@ -168,6 +189,9 @@ export class StarRating extends HTMLElement {
 
     static _sources(){
       return [ BASE_IMG_BKG , SELECTED_IMG_BKG ];
+    }
+    static _defaultColors() {
+        return [ UNSELECTED_COLOR, SELECTED_COLOR ];
     }
 
     static _style(size, starImg){
